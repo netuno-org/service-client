@@ -4,6 +4,10 @@ import './App.css';
 
 import _service from '@netuno/service-client';
 
+_service.config({
+    prefix: 'http://localhost:3000/'
+});
+
 function App() {
   const [response, setResponse] = useState("");
   _service({
