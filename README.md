@@ -112,7 +112,8 @@ handleSave(values) {
                 fail();
             }
         },
-        fail: () => {
+        fail: (e) => {
+            console.log("Service failed.", e);
             fail();
         }
     });

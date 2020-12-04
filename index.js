@@ -29,9 +29,17 @@ const _service = (args) => {
         settings.url = settings.prefix + settings.url;
     }
     if (settings.method == 'GET' && settings.data) {
-        settings.url = _service.urlWithParams(settings.url, settings.data);
+        if (typeof settings.data == "object") {
+            settings.url = _service.urlWithParams(settings.url, settings.data);
+        } else {
+            settings.url += `?${settings.data}`;
+        }
     } else if (settings.data && settings.headers['Content-Type'] == 'application/json') {
-        settings.body = JSON.stringify(settings.data)
+        if (typeof settings.data == "object") {
+            settings.body = JSON.stringify(settings.data);
+        } else {
+            settings.body = settings.data;
+        }
     }
     fetch(settings.url, settings).then(
         (response) => {
@@ -77,10 +85,10 @@ const _service = (args) => {
 _service.urlWithParams = (url, obj) => {
     const params = Object.keys(obj).reduce((a, k) => {
       const v = encodeURIComponent(obj[k])
-      a.push("#{k}=#{v}")
+      a.push(`${k}=${v}`)
       return a
     }, []).join('&');
-    const str = "#{url}?#{params}";
+    const str = "${url}?${params}";
     return str;
 };
 
