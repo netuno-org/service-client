@@ -24,15 +24,35 @@ _service.config({
 
 Any setting passed to service call can be configured globally.
 
+Default config parameters:
+
+```
+{
+    prefix: '',
+    url: '',
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept':  'application/json'
+    },
+    success: (data) => { },
+    fail: (data) => {}
+}
+```
+
 ### Usage
 
-You can set any `fetch` parameters, like `mode`, `credentials`, `headers`.
+In the global configuration (`_service.config({...})`) or with the object passed to the service function (`_service({...})`), you can set or override any `fetch` parameters, like `mode`, `credentials`, `headers`, etc.
+
+The `data` is automatically converted to the body content.
 
 ##### GET Text or JSON
 
 ```
   _service({
       url: "/services/my-get-service",
+      data: { param1: "1", param2: "2" },
       success: (response) => {
           if (response.text) {
               console.log("Service Response", response.text);
@@ -49,14 +69,13 @@ You can set any `fetch` parameters, like `mode`, `credentials`, `headers`.
 
 ##### Simple JSON POST
 
-With `fetch` `mode` as `no-cors`:
+By default is submitted as JSON:
 
 ```
   _service({
       url: "/services/my-post-service",
       method: 'POST',
-      mode: "no-cors",
-      body: JSON.stringify({ param1: "1", param2: "2" }),
+      data: { param1: "1", param2: "2" },
       success: (response) => {
           if (response.json) {
               console.log("Service Response", response.json);
@@ -66,6 +85,43 @@ With `fetch` `mode` as `no-cors`:
           console.log("Service Error", e);
       }
   });
+```
+
+##### Form Upload
+
+Load the FormData with the file field and send it:
+
+```
+const formData = new FormData();
+formData.append('file', input.files[0]);
+formData.append('otherField', 'value...');
+_service({
+    method: "POST",
+    url: "/",
+    data: formData,
+    success: (response) => {
+        setResponse(response.text);
+    },
+    fail: (e) => {
+        console.log("Reponse Error", e);
+    }
+});
+```
+
+Load the FormData object from a ReactJS form reference:
+
+```
+_service({
+    method: "POST",
+    url: "/",
+    data: new FormData(formUpload.current),
+    success: (response) => {
+        setResponse(response.text);
+    },
+    fail: (e) => {
+        console.log("Reponse Error", e);
+    }
+});
 ```
 
 ##### POST JSON with ReactJS and Ant.Design:
@@ -95,7 +151,7 @@ handleSave(values) {
     _service({
         url: '/services/my-post-service',
         method: 'POST',
-        body: JSON.stringify(values),
+        data: values,
         success: (response) => {
             if (response.json.result === true) {
                 notification["success"]({

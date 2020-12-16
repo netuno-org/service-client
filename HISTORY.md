@@ -1,3 +1,11 @@
+# 1.0.3 / 2020-12-16
+
+Form upload support.
+
+# 1.0.2 / 2020-12-04
+
+Data parameters detection with auto format.
+
 # 1.0.1 / 2020-11-30
 
 Global configurations.

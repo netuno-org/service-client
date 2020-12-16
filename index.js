@@ -28,17 +28,22 @@ const _service = (args) => {
         }
         settings.url = settings.prefix + settings.url;
     }
-    if (settings.method == 'GET' && settings.data) {
-        if (typeof settings.data == "object") {
-            settings.url = _service.urlWithParams(settings.url, settings.data);
-        } else {
-            settings.url += `?${settings.data}`;
-        }
-    } else if (settings.data && settings.headers['Content-Type'] == 'application/json') {
-        if (typeof settings.data == "object") {
-            settings.body = JSON.stringify(settings.data);
-        } else {
+    if (settings.data) {
+        if (settings.method == 'GET') {
+            if (typeof settings.data == "object") {
+                settings.url = _service.urlWithEncodedParameters(settings.url, settings.data);
+            } else {
+                settings.url += `?${settings.data}`;
+            }
+        } else if (settings.data instanceof FormData) {
             settings.body = settings.data;
+            delete settings.headers['Content-Type'];
+        } else if (settings.headers['Content-Type'] == 'application/json') {
+            if (typeof settings.data == "object") {
+                settings.body = JSON.stringify(settings.data);
+            } else {
+                settings.body = settings.data;
+            }
         }
     }
     fetch(settings.url, settings).then(
@@ -82,14 +87,21 @@ const _service = (args) => {
     )
 };
 
-_service.urlWithParams = (url, obj) => {
+_service.urlWithEncodedParameters = (url, obj) => {
+    const params = _service.encodedParameters(obj);
+    if (params != "") {
+        return `${url}?${params}`;
+    }
+    return url;
+};
+
+_service.encodedParameters = (obj) => {
     const params = Object.keys(obj).reduce((a, k) => {
       const v = encodeURIComponent(obj[k])
       a.push(`${k}=${v}`)
       return a
     }, []).join('&');
-    const str = "${url}?${params}";
-    return str;
+    return params;
 };
 
 _service.config = (settings) => {
