@@ -1,3 +1,9 @@
+# 1.0.4 / 2020-01-18
+
+Changed from extend to deep-extend.
+
+Get configuration with `_service.config()`.
+
 # 1.0.3 / 2020-12-16
 
 Form upload support.

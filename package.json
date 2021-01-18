@@ -1,6 +1,6 @@
 {
     "name": "@netuno/service-client",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -10,10 +10,20 @@
     "license": "MIT",
     "repository": "netuno-org/service-client",
     "keywords": [
-        "netuno", "client", "fetch", "http", "connection", "ajax", "async", "rest", "simple", "util", "utility"
+        "netuno",
+        "client",
+        "fetch",
+        "http",
+        "connection",
+        "ajax",
+        "async",
+        "rest",
+        "simple",
+        "util",
+        "utility"
     ],
     "dependencies": {
-        "extend": "^3.0.2"
+        "deep-extend": "^0.6.0"
     },
     "files": [
         "LICENSE",

@@ -1,4 +1,4 @@
-const extend = require('extend');
+const extend = require('deep-extend');
 
 const config = {
     prefix: '',
@@ -105,7 +105,12 @@ _service.encodedParameters = (obj) => {
 };
 
 _service.config = (settings) => {
-    extend(config, settings);
+    if (!!settings) {
+        extend(config, settings);
+    }
+    const newConfig = {};
+    extend(newConfig, config);
+    return newConfig;
 };
 
 export default _service;

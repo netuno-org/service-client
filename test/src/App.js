@@ -53,6 +53,8 @@ function App() {
         });
         return false;
     };
+    _service.config({ headers: { "Authorization": "Bearer ..." } });
+    console.log("Service Config with custom header.", _service.config());
     return (
         <div className="App">
           <header className="App-header">
