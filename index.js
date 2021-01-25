@@ -1,21 +1,23 @@
 const extend = require('deep-extend');
 
-const config = {
-    prefix: '',
-    url: '',
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept':  'application/json'
-    },
-    success: (data) => { },
-    fail: (data) => {}
+if (!window._service_config) {
+    window._service_config = {
+        prefix: '',
+        url: '',
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept':  'application/json'
+        },
+        success: (data) => { },
+        fail: (data) => {}
+    }
 }
 
 const _service = (args) => {
     const settings = {};
-    extend(settings, config);
+    extend(settings, window._service_config);
     extend(settings, args);
     if (!settings.url.toLowerCase().startsWith('http://')
         && !settings.url.toLowerCase().startsWith('https://')
@@ -106,10 +108,10 @@ _service.encodedParameters = (obj) => {
 
 _service.config = (settings) => {
     if (!!settings) {
-        extend(config, settings);
+        extend(window._service_config, settings);
     }
     const newConfig = {};
-    extend(newConfig, config);
+    extend(newConfig, window._service_config);
     return newConfig;
 };
 

@@ -1,3 +1,7 @@
+# 1.0.5 / 2020-01-25
+
+Global configuration in the window variable, to solve lost configurations in production.
+
 # 1.0.4 / 2020-01-18
 
 Changed from extend to deep-extend.
