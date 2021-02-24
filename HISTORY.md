@@ -1,3 +1,7 @@
+# 1.0.7 / 2020-02-24
+
+Supports blob output.
+
 # 1.0.6 / 2020-01-25
 
 Previous changes reverted, was another issue.

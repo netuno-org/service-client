@@ -175,3 +175,26 @@ handleSave(values) {
     });
 }
 ```
+
+##### BLOB
+
+Download file:
+
+```
+  _service({
+      url: "/services/my-downloadable-service",
+      method: 'POST',
+      data: { param1: "1", param2: "2" },
+      blob: true,
+      success: (response) => {
+          const { blob } = response;
+          if (blob) {
+              const file = window.URL.createObjectURL(blob);
+              window.location.assign(file);
+          }
+      },
+      fail: (e) => {
+          console.log("Service Error", e);
+      }
+  });
+```

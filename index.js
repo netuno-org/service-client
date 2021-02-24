@@ -55,21 +55,30 @@ const _service = (args) => {
                     const info = {
                         status: response.status
                     };
-                    const contentType = response.headers.get("Content-Type");
-                    if (contentType && contentType.toLowerCase().indexOf("application/json") == 0) {
-                        return response.json().then((data) => {
+                    if (settings.blob) {
+                        return response.blob().then((blob) => {
                             return settings.success({
                                 ...info,
-                                json: data
+                                blob: blob
                             });
                         });
                     } else {
-                        return response.text().then((text) => {
-                            return settings.success({
-                                ...info,
-                                text: text
+                        const contentType = response.headers.get("Content-Type");
+                        if (contentType && contentType.toLowerCase().indexOf("application/json") == 0) {
+                            return response.json().then((data) => {
+                                return settings.success({
+                                    ...info,
+                                    json: data
+                                });
                             });
-                        });
+                        } else {
+                            return response.text().then((text) => {
+                                return settings.success({
+                                    ...info,
+                                    text: text
+                                });
+                            });
+                        }
                     }
                 }
             } else {

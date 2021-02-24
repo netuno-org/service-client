@@ -5,7 +5,7 @@ import './App.css';
 import _service from '@netuno/service-client';
 
 _service.config({
-    prefix: 'http://localhost:3000/'
+    prefix: 'http://localhost:3001/'
 });
 
 function App() {
@@ -53,6 +53,20 @@ function App() {
         });
         return false;
     };
+    const handleDownload = (e) => {
+        _service({
+            url: "/static/media/logo.6ce24c58.svg",
+            data: { name: "Sitana", site: "sitana.pt" },
+            blob: true,
+            success: (response) => {
+                const file = window.URL.createObjectURL(response.blob);
+                window.location.assign(file);
+            },
+            fail: (e) => {
+                console.log("Reponse Error", e);
+            }
+        });
+    };
     _service.config({ headers: { "Authorization": "Bearer ..." } });
     console.log("Service Config with custom header.", _service.config());
     return (
@@ -76,6 +90,8 @@ function App() {
               </div>
               <button type="submit">Submit</button>
             </form>
+            <h2>Blob</h2>
+            <button onClick={handleDownload}>Download File</button>
           </header>
         </div>
     );
