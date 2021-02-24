@@ -198,3 +198,36 @@ Download file:
       }
   });
 ```
+
+To download file with a custom name you can use the module [DownloadJS](https://www.npmjs.com/package/downloadjs):
+
+`npm install -S downloadjs`
+
+Then the sample code:
+
+```
+import _service from '@netuno/service-client';
+import download from 'downloadjs';
+
+...
+
+  _service({
+      url: "/services/my-downloadable-service",
+      blob: true,
+      success: (response) => {
+          const { blob } = response;
+          if (blob) {
+              // Excel XLS
+              download(blob, "my-excel.xls", "application/vnd.ms-excel");
+              // PDF
+              download(blob, "my-pdf.pdf", "application/pdf");
+          }
+      },
+      fail: (e) => {
+          console.log("Service Error", e);
+      }
+  });
+
+...
+
+```
