@@ -1,6 +1,7 @@
 # service-client
-
-Client to integrations with Netuno Services.
+**expecifiar um pouco mais o conceito e importância, um pequeno resumo**
+**usar o exemplo do auth-client**
+Client integrations with Netuno Services.
 
 More about the [Netuno Platform](https://netuno.org/).
 
@@ -44,6 +45,7 @@ Default config parameters:
 ### Usage
 
 In the global configuration (`_service.config({...})`) or with the object passed to the service function (`_service({...})`), you can set or override any `fetch` parameters, like `mode`, `credentials`, `headers`, etc.
+**sim, mas para quê em concreto. especificar um pouco mais**
 
 The `data` is automatically converted to the body content.
 
@@ -126,7 +128,7 @@ _service({
 
 ##### POST JSON with ReactJS and Ant.Design:
 
-Imports:
+Imports needed:
 
 ```
 import { notification } from 'antd';
@@ -177,7 +179,8 @@ handleSave(values) {
 ```
 
 ##### BLOB
-
+**Explicar um pouco no que consiste o Blob**
+**Qual a vantagem de o usar no serviço?**
 Download file:
 
 ```
@@ -199,7 +202,7 @@ Download file:
   });
 ```
 
-To download file with a custom name you can use the module [DownloadJS](https://www.npmjs.com/package/downloadjs):
+To download the file with a custom name you can use the module [DownloadJS](https://www.npmjs.com/package/downloadjs):
 
 `npm install -S downloadjs`
 
