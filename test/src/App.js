@@ -5,7 +5,7 @@ import './App.css';
 import _service from '@netuno/service-client';
 
 _service.config({
-    prefix: 'http://localhost:3001/'
+    prefix: 'http://localhost:3000/'
 });
 
 function App() {

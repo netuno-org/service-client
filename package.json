@@ -1,6 +1,6 @@
 {
     "name": "@netuno/service-client",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -23,7 +23,7 @@
         "utility"
     ],
     "dependencies": {
-        "deep-extend": "^0.6.0"
+        "just-extend": "^4.2.1"
     },
     "files": [
         "LICENSE",

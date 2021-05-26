@@ -1,4 +1,4 @@
-const extend = require('deep-extend');
+const extend = require('just-extend');
 
 const config = {
     prefix: '',
@@ -15,8 +15,8 @@ const config = {
 
 const _service = (args) => {
     const settings = {};
-    extend(settings, config);
-    extend(settings, args);
+    extend(true, settings, config);
+    extend(true, settings, args);
     if (!settings.url.toLowerCase().startsWith('http://')
         && !settings.url.toLowerCase().startsWith('https://')
         && settings.prefix && settings.prefix != ''
@@ -115,10 +115,10 @@ _service.encodedParameters = (obj) => {
 
 _service.config = (settings) => {
     if (!!settings) {
-        extend(config, settings);
+        extend(true, config, settings);
     }
     const newConfig = {};
-    extend(newConfig, config);
+    extend(true, newConfig, config);
     return newConfig;
 };
 
