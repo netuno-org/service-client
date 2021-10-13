@@ -44,7 +44,7 @@ const _service = (args) => {
                 port = port.substring(0, port.length - 2) + '90';
             }
             if (frontendServer) {
-                prefix = window.location.protocol +'//'+ hostname +':'+ port + endpoint;
+                prefix = window.location.protocol +'//'+ hostname +':'+ port + prefix;
             }
         }
         settings.url = prefix + settings.url;
