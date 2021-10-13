@@ -26,7 +26,28 @@ const _service = (args) => {
         } else if (!settings.prefix.endsWith('/') && !settings.url.startsWith('/')) {
             settings.url = '/'+ settings.url;
         }
-        settings.url = settings.prefix + settings.url;
+        let prefix = settings.prefix;
+        if (prefix.indexOf('/') == 0) {
+            let frontendServer	= false;
+            let hostname = '';
+            let port = '';
+            if (window.location.host.indexOf(':')) {
+                hostname = window.location.host.substring(0, window.location.host.indexOf(':'));
+                port = window.location.host.substring(window.location.host.indexOf(':') + 1);
+            }
+            if (port === '3000') {
+                frontendServer = true;
+                port = '9000';
+            }
+            if (port.length > 2 && port.substring(port.length - 2, port.length) == '30') {
+                frontendServer = true;
+                port = port.substring(0, port.length - 2) + '90';
+            }
+            if (frontendServer) {
+                prefix = window.location.protocol +'//'+ hostname +':'+ port + endpoint;
+            }
+        }
+        settings.url = prefix + settings.url;
     }
     if (settings.data) {
         if (settings.method == 'GET') {
