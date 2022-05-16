@@ -1,0 +1,15 @@
+
+body {
+  background-color: #282c34;
+}
+
+.App {
+  color: #fff;
+  text-align: center;
+}
+
+.App form {
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}

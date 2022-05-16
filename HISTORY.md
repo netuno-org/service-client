@@ -1,3 +1,21 @@
+# 1.1.1 / 2022-05-16
+
+It is not restricted to web browsers only; it is used too as NodeJS native module.
+
+New test implemented with Netuno application and Jest.
+
+# 1.0.10 / 2021-10-13
+
+Bug with endpoint not defined has been solved.
+
+# 1.0.9 / 2021-10-13
+
+Autoload the URL prefix when it is in development mode.
+
+# 1.0.8 / 2021-05-26
+
+Extend dependency changed.
+
 # 1.0.7 / 2020-02-24
 
 Supports blob output.
