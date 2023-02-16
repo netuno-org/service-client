@@ -6,7 +6,7 @@
     "enabled": true
   }],
   "smtp": {},
-  "name": "service_test",
+  "name": "service_client_test",
   "setup": {
     "schema": {
       "execution": true,
