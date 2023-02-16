@@ -170,8 +170,9 @@ function App() {
       }
     });
   };
-  _service.config({ headers: { "Authorization": "Bearer ..." } });
-  console.log("Service Config with custom header.", _service.config());
+  // AUTHORIZATION TOKEN:
+  // _service.config({ headers: { "Authorization": "Bearer ..." } });
+  // console.log("Service Config with custom header.", _service.config());
   return (
     <div className="App">
       <h2>JSON Requests</h2>
