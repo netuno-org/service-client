@@ -25,38 +25,7 @@ const _service = async (args) => {
     const settings = {};
     extend(true, settings, config);
     extend(true, settings, args);
-    if (!settings.url.toLowerCase().startsWith('http://')
-        && !settings.url.toLowerCase().startsWith('https://')
-        && settings.prefix && settings.prefix != ''
-        && !settings.url.toLowerCase().startsWith(settings.prefix.toLowerCase())) {
-        if (settings.prefix.endsWith('/') && settings.url.startsWith('/')) {
-            settings.url = settings.url.substring(1);
-        } else if (!settings.prefix.endsWith('/') && !settings.url.startsWith('/')) {
-            settings.url = '/'+ settings.url;
-        }
-        let prefix = settings.prefix;
-        if (prefix.indexOf('/') == 0) {
-            let frontendServer	= false;
-            let hostname = '';
-            let port = '';
-            if (window.location.host.indexOf(':')) {
-                hostname = window.location.host.substring(0, window.location.host.indexOf(':'));
-                port = window.location.host.substring(window.location.host.indexOf(':') + 1);
-            }
-            if (port === '3000') {
-                frontendServer = true;
-                port = '9000';
-            }
-            if (port.length > 2 && port.substring(port.length - 2, port.length) == '30') {
-                frontendServer = true;
-                port = port.substring(0, port.length - 2) + '90';
-            }
-            if (frontendServer) {
-                prefix = window.location.protocol +'//'+ hostname +':'+ port + prefix;
-            }
-        }
-        settings.url = prefix + settings.url;
-    }
+    settings.url = _service.url(settings);
     if (settings.data) {
         if (settings.method.toUpperCase() == 'GET') {
             if (typeof settings.data == "object") {
@@ -314,6 +283,56 @@ _service.randomString = (length) => {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
    }
    return result;
+}
+
+_service.url = (...params) => {
+    let args = {};
+    if (params.length === 1) {
+        if (typeof params[0] === 'object' && params[0] != null && !Array.isArray(params[0])) {
+            args = params[0];
+        } else {
+            args.url = params[0];
+        }
+    } else if (params.length >= 2) {
+        args = params[0];
+        args.url = params[1];
+    }
+    const settings = {};
+    extend(true, settings, config);
+    extend(true, settings, args);
+    if (!settings.url.toLowerCase().startsWith('http://')
+        && !settings.url.toLowerCase().startsWith('https://')
+        && settings.prefix && settings.prefix != ''
+        && !settings.url.toLowerCase().startsWith(settings.prefix.toLowerCase())) {
+        if (settings.prefix.endsWith('/') && settings.url.startsWith('/')) {
+            settings.url = settings.url.substring(1);
+        } else if (!settings.prefix.endsWith('/') && !settings.url.startsWith('/')) {
+            settings.url = '/'+ settings.url;
+        }
+        let prefix = settings.prefix;
+        if (prefix.indexOf('/') == 0) {
+            let frontendServer	= false;
+            let hostname = '';
+            let port = '';
+            if (window && window.location.host.indexOf(':')) {
+                hostname = window.location.host.substring(0, window.location.host.indexOf(':'));
+                port = window.location.host.substring(window.location.host.indexOf(':') + 1);
+            }
+            if (port === '3000' || port === '5173') {
+                frontendServer = true;
+                port = '9000';
+            }
+            if (port.length > 2 && port.substring(port.length - 2, port.length) == '30') {
+                frontendServer = true;
+                port = port.substring(0, port.length - 2) + '90';
+            }
+            if (window && frontendServer) {
+                prefix = window.location.protocol +'//'+ hostname +':'+ port + prefix;
+            }
+        }
+        settings.url = prefix + settings.url;
+    }
+    return settings.url;
 }
 
 _service.config = (settings) => {
