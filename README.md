@@ -1,10 +1,10 @@
 # service-client
 
+REST and HTTP client optimized for Netuno Platform services integrations.
+
 <a href="https://www.npmjs.com/package/@netuno/service-client"><img src="https://img.shields.io/npm/v/@netuno/service-client.svg?style=flat" alt="npm version"></a>
 
-Client to integrations with Netuno Services.
-
-More about the [Netuno Platform](https://netuno.org/).
+See more about the [Netuno Platform](https://netuno.org/).
 
 ### Install
 
