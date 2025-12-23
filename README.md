@@ -6,19 +6,23 @@ REST and HTTP client optimized for Netuno Platform services integrations.
 
 See more about the [Netuno Platform](https://netuno.org/).
 
-### Install
+## Install
 
-`npm i -S @netuno/service-client`
+```shell
+npm i -S @netuno/service-client
+```
 
-### Import
+## Import
 
-`import _service from '@netuno/service-client';`
+```javascript
+import _service from '@netuno/service-client';
+```
 
-### Config
+## Config
 
 Define the prefix to be used with all URLs:
 
-```
+```javascript
 _service.config({
     prefix: 'http://localhost:9000/services/'
 });
@@ -28,7 +32,7 @@ Any setting passed to service call can be configured globally.
 
 Default config parameters:
 
-```
+```javascript
 {
     prefix: '',
     url: '',
@@ -43,15 +47,15 @@ Default config parameters:
 }
 ```
 
-### Usage
+## Usage
 
 In the global configuration (`_service.config({...})`) or with the object passed to the service function (`_service({...})`), you can set or override any `fetch` parameters, like `mode`, `credentials`, `headers`, etc.
 
 The `data` is automatically converted to the body content.
 
-##### GET Text or JSON
+### GET Text or JSON
 
-```
+```javascript
   _service({
       url: "/services/my-get-service",
       data: { param1: "1", param2: "2" },
@@ -69,11 +73,11 @@ The `data` is automatically converted to the body content.
   });
 ```
 
-##### Simple JSON POST
+### Simple JSON POST
 
 By default is submitted as JSON:
 
-```
+```javascript
   _service({
       url: "/services/my-post-service",
       method: 'POST',
@@ -89,11 +93,11 @@ By default is submitted as JSON:
   });
 ```
 
-##### Form Upload
+### Form Upload
 
 Load the FormData with the file field and send it:
 
-```
+```javascript
 const formData = new FormData();
 formData.append('file', input.files[0]);
 formData.append('otherField', 'value...');
@@ -112,7 +116,7 @@ _service({
 
 Load the FormData object from a ReactJS form reference:
 
-```
+```javascript
 _service({
     method: "POST",
     url: "/",
@@ -126,19 +130,19 @@ _service({
 });
 ```
 
-##### POST JSON with ReactJS and Ant.Design:
+### POST JSON with ReactJS and Ant.Design:
 
 Imports:
 
-```
+```javascript
 import { notification } from 'antd';
 import _service from '@netuno/service-client';
 ```
 
 Save event will send the values object as JSON:
 
-```
-handleSave(values) {
+```javascript
+function handleSave(values) {
     this.setState({ loading: true });
     const fail = () => {
         this.setState({ loading: false });
@@ -178,11 +182,11 @@ handleSave(values) {
 }
 ```
 
-##### BLOB
+### BLOB
 
 Download file:
 
-```
+```javascript
   _service({
       url: "/services/my-downloadable-service",
       method: 'POST',
@@ -207,7 +211,7 @@ To download file with a custom name you can use the module [DownloadJS](https://
 
 Then the sample code:
 
-```
+```jsx
 import _service from '@netuno/service-client';
 import download from 'downloadjs';
 
@@ -232,4 +236,12 @@ import download from 'downloadjs';
 
 ...
 
+```
+
+### Service URL
+
+To get the full service URL:
+
+```javascript
+const avatarLink = _service.url(`/profile/avatar?uid=${uidAvatar}`)
 ```
