@@ -1,3 +1,13 @@
+# 1.2.1 / 2025-12-23
+
+New `_service.url('...')` to easily get the full service URL.
+
+# 1.2.0 / 2023-02-16
+
+CommonJS and Module support.
+
+Tests optimized.
+
 # 1.1.1 / 2022-05-16
 
 It is not restricted to web browsers only; it is used too as NodeJS native module.
