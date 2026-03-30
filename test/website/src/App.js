@@ -25,7 +25,11 @@ function App() {
       method: "get",
       url: "/simple",
       data: { name: 'Test Name', test: true },
+      start: () => {
+        console.log("GET Start");
+      },
       success: (response) => {
+        console.log("GET Success");
         if (response.text) {
           setResponseGET(response.text);
         }
@@ -35,6 +39,9 @@ function App() {
       },
       fail: (e) => {
         console.log("GET Reponse Error", e);
+      },
+      end: () => {
+        console.log("GET End");
       }
     });
   };
@@ -43,7 +50,11 @@ function App() {
       method: "patch",
       url: "/simple",
       data: { name: 'Test Name', test: true },
+      start: () => {
+        console.log("PATCH Start");
+      },
       success: (response) => {
+        console.log("PATCH Success");
         if (response.text) {
           setResponsePATCH(response.text);
         }
@@ -53,6 +64,9 @@ function App() {
       },
       fail: (e) => {
         console.log("PATCH Reponse Error", e);
+      },
+      end: () => {
+        console.log("PATCH End");
       }
     });
   };
@@ -61,7 +75,11 @@ function App() {
       method: "post",
       url: "/simple",
       data: { name: 'Test Name', test: true },
+      start: () => {
+        console.log("POST Start");
+      },
       success: (response) => {
+        console.log("POST Success");
         if (response.text) {
           setResponsePOST(response.text);
         }
@@ -71,6 +89,9 @@ function App() {
       },
       fail: (e) => {
         console.log("POST Reponse Error", e);
+      },
+      end: () => {
+        console.log("POST End");
       }
     });
   };
@@ -79,7 +100,11 @@ function App() {
       method: "put",
       url: "/simple",
       data: { name: 'Test Name', test: true },
+      start: () => {
+        console.log("PUT Start");
+      },
       success: (response) => {
+        console.log("PUT Success");
         if (response.text) {
           setResponsePUT(response.text);
         }
@@ -89,6 +114,9 @@ function App() {
       },
       fail: (e) => {
         console.log("PUT Reponse Error", e);
+      },
+      end: () => {
+        console.log("PUT End");
       }
     });
   };
@@ -97,7 +125,11 @@ function App() {
       method: "delete",
       url: "/simple",
       data: { name: 'Test Name', test: true },
+      start: () => {
+        console.log("DELETE Start");
+      },
       success: (response) => {
+        console.log("DELETE Success");
         if (response.text) {
           setResponseDELETE(response.text);
         }
@@ -107,6 +139,9 @@ function App() {
       },
       fail: (e) => {
         console.log("DELETE Reponse Error", e);
+      },
+      end: () => {
+        console.log("DELETE End");
       }
     });
   };
@@ -119,6 +154,9 @@ function App() {
       method: "POST",
       url: "/upload",
       data: formData,
+      start: () => {
+        console.log("Upload POST Start");
+      },
       success: (response) => {
         if (response.text) {
           setResponseUploadPOST(response.text);
@@ -129,7 +167,10 @@ function App() {
       },
       fail: (e) => {
         console.log("Upload POST Reponse Error", e);
-      }
+      },
+      end: () => {
+        console.log("Upload POST End");
+      },
     });
     return false;
   };
@@ -142,6 +183,9 @@ function App() {
       method: "PUT",
       url: "/upload",
       data: formData,
+      start: () => {
+        console.log("Upload PUT Start");
+      },
       success: (response) => {
         if (response.text) {
           setResponseUploadPUT(response.text);
@@ -152,6 +196,9 @@ function App() {
       },
       fail: (e) => {
         console.log("Upload PUT Reponse Error", e);
+      },
+      end: () => {
+        console.log("Upload PUT End");
       }
     });
     return false;
@@ -161,12 +208,18 @@ function App() {
       url: "/download",
       data: { name: 'Test Name', test: true },
       blob: true,
+      start: () => {
+        console.log("Download Start");
+      },
       success: (response) => {
         const file = window.URL.createObjectURL(response.blob);
         window.location.assign(file);
       },
       fail: (e) => {
         console.log("Reponse Error", e);
+      },
+      end: () => {
+        console.log("Download End");
       }
     });
   };
