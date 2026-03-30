@@ -13,8 +13,10 @@ const config = {
         'Content-Type': 'application/json',
         'Accept':  'application/json'
     },
-    success: (data) => { },
-    fail: (data) => {}
+    start: () => {},
+    success: () => { },
+    fail: () => {},
+    end: () => {}
 }
 
 if (isNode) {
@@ -28,7 +30,7 @@ const _service = (args) => {
     extend(true, settings, args);
     settings.url = _service.url(settings);
     if (settings.data) {
-        if (settings.method.toUpperCase() == 'GET') {
+        if (settings.method.toUpperCase() === 'GET') {
             if (typeof settings.data == "object") {
                 settings.url = _service.urlWithEncodedParameters(settings.url, settings.data);
             } else {
@@ -84,7 +86,7 @@ const _service = (args) => {
                 }
             });
             bodyBufferAppend(`\r\n--${boundary}--\r\n`);
-        } else if (settings.headers['Content-Type'] == 'application/json') {
+        } else if (settings.headers['Content-Type'] === 'application/json') {
             if (typeof settings.data == "object") {
                 settings.body = JSON.stringify(settings.data);
             } else {
@@ -113,6 +115,7 @@ const _service = (args) => {
         } else {
             throw new Error('URL with an invalid protocol. Only is supported HTTP or HTTPS.');
         }
+        settings.start();
         const nodeClientResponse = (response) => {
             if (settings.encoding) {
                 response.setEncoding(settings.encoding);
@@ -121,59 +124,77 @@ const _service = (args) => {
             const info = {
                 ok: response.statusCode >= 200 && response.statusCode < 300,
                 status: response.statusCode,
-                isJSON: contentType && contentType.toLowerCase().indexOf("application/json") == 0,
+                isJSON: contentType && contentType.toLowerCase().indexOf("application/json") === 0,
                 contentType: contentType,
                 response: response
             };
-            if (response.statusCode == 204) {
-                return settings.success({...info});
-            } else {
-                let textData = '';
-                let blobData = [];
-                response.on('data', (chunk) => {
-                    if (settings.blob && info.ok) {
-                        blobData = blobData.concat([...chunk]);
-                    } else {
-                        textData += chunk;
-                    }
-                });
-                response.on('end', () => {
-                    if (info.ok) {
-                        if (settings.blob) {
-                            return settings.success({
-                                ...info,
-                                blob: blobData
-                            });
-                        }
-                        if (info.isJSON) {
-                            try {
-                                return settings.success({
-                                    ...info,
-                                    json: JSON.parse(textData)
-                                });
-                            } catch (e) { }
-                        }
-                        return settings.success({
+            if (response.statusCode === 204) {
+                settings.success({...info});
+                settings.end();
+                return;
+            }
+            let textData = '';
+            let blobData = [];
+            response.on('data', (chunk) => {
+                if (settings.blob && info.ok) {
+                    blobData = blobData.concat([...chunk]);
+                } else {
+                    textData += chunk;
+                }
+            });
+            response.on('end', () => {
+                if (info.ok) {
+                    if (settings.blob) {
+                        settings.success({
                             ...info,
-                            text: textData
+                            blob: blobData
                         });
+                        settings.end();
+                        return;
                     }
                     if (info.isJSON) {
                         try {
-                            return settings.fail({
+                            settings.success({
                                 ...info,
-                                error: new Error(`Service failed responding status ${info.status}.`),
                                 json: JSON.parse(textData)
                             });
-                        } catch (e) { }
+                        } catch (e) {
+                            settings.fail({
+                                error: e
+                            });
+                        }
+                        settings.end();
+                        return;
                     }
-                    return settings.fail({
+                    settings.success({
                         ...info,
-                        error: new Error(`Service failed responding status ${info.status}.`),
                         text: textData
                     });
+                    settings.end();
+                    return;
+                }
+                if (info.isJSON) {
+                    try {
+                        settings.fail({
+                            ...info,
+                            error: new Error(`Service failed responding status ${info.status}.`),
+                            json: JSON.parse(textData)
+                        });
+                    } catch (e) {
+                        settings.fail({
+                            error: e
+                        });
+                    }
+                    settings.end();
+                    return;
+                }
+                settings.fail({
+                    ...info,
+                    error: new Error(`Service failed responding status ${info.status}.`),
+                    text: textData
                 });
-            }
+                settings.end();
+            });
         };
         let nodeClientRequest = null;
         if (settings.method.toUpperCase() === 'GET') {
@@ -185,6 +206,7 @@ const _service = (args) => {
             settings.fail({
                 error: e
             });
+            settings.end();
         });
         if (settings.timeout && settings.timeout > 0) {
             nodeClientRequest.setTimeout(settings.timeout, () => {
@@ -195,86 +217,96 @@ const _service = (args) => {
             nodeClientRequest.write(settings.body);
             nodeClientRequest.end();
         }
-    } else {
-        fetch(settings.url, settings).then(
-            (response) => {
-                const contentType = response.headers.get("Content-Type");
-                const info = {
-                    ok: response.ok,
-                    status: response.status,
-                    isJSON: contentType && contentType.toLowerCase().indexOf("application/json") == 0,
-                    contentType: contentType,
-                    response: response
-                };
-                if (info.ok) {
-                    if (response.status == 204) {
-                        return settings.success({...info});
-                    }
-                    if (settings.blob) {
-                        return response.blob().then((blob) => {
-                            return settings.success({
-                                ...info,
-                                blob: blob
-                            });
-                        });
-                    }
-                    if (info.isJSON) {
-                        return response.json().then((data) => {
-                            return settings.success({
-                                ...info,
-                                json: data
-                            });
-                        });
-                    }
-                    return response.text().then((text) => {
-                        return settings.success({
+        return;
+    }
+    settings.start();
+    fetch(settings.url, settings).then(
+        (response) => {
+            const contentType = response.headers.get("Content-Type");
+            const info = {
+                ok: response.ok,
+                status: response.status,
+                isJSON: contentType && contentType.toLowerCase().indexOf("application/json") === 0,
+                contentType: contentType,
+                response: response
+            };
+            if (info.ok) {
+                if (response.status === 204) {
+                    settings.success({...info});
+                    settings.end();
+                    return;
+                }
+                if (settings.blob) {
+                    response.blob().then((blob) => {
+                        settings.success({
                             ...info,
-                            text: text
+                            blob: blob
                         });
+                        settings.end();
                     });
+                    return;
                 }
                 if (info.isJSON) {
-                    return response.json().then((data) => {
-                        return settings.fail({
+                    response.json().then((data) => {
+                        settings.success({
                             ...info,
-                            error: new Error(`Service failed responding status ${info.status}.`),
                             json: data
                         });
+                        settings.end();
                     });
+                    return;
                 }
-                return response.text().then((text) => {
-                    return settings.fail({
+                response.text().then((text) => {
+                    settings.success({
                         ...info,
-                        error: new Error(`Service failed responding status ${info.status}.`),
                         text: text
                     });
+                    settings.end();
                 });
+                return;
             }
-        ).catch(
-            (e) => {
-                return settings.fail({
-                    error: e
+            if (info.isJSON) {
+                response.json().then((data) => {
+                    settings.fail({
+                        ...info,
+                        error: new Error(`Service failed responding status ${info.status}.`),
+                        json: data
+                    });
+                    settings.end();
                 });
+                return;
             }
-        )
-    }
+            response.text().then((text) => {
+                settings.fail({
+                    ...info,
+                    error: new Error(`Service failed responding status ${info.status}.`),
+                    text: text
+                });
+                settings.end();
+            });
+        }
+    ).catch((e) => {
+        settings.fail({
+            error: e
+        });
+        settings.end();
+    });
 };
 
 _service.urlWithEncodedParameters = (url, obj) => {
     const params = _service.encodedParameters(obj);
-    if (params != "") {
+    if (params !== "") {
         return `${url}?${params}`;
     }
     return url;
 };
 
 _service.encodedParameters = (obj) => {
-    const params = Object.keys(obj).reduce((a, k) => {
+    return Object.keys(obj).reduce((a, k) => {
       const v = encodeURIComponent(obj[k])
       a.push(`${k}=${v}`)
       return a
     }, []).join('&');
-    return params;
 };
 
 _service.randomString = (length) => {
@@ -303,7 +335,7 @@ _service.url = (...params) => {
     extend(true, settings, args);
     if (!settings.url.toLowerCase().startsWith('http://')
         && !settings.url.toLowerCase().startsWith('https://')
-        && settings.prefix && settings.prefix != ''
+        && settings.prefix && settings.prefix !== ''
         && !settings.url.toLowerCase().startsWith(settings.prefix.toLowerCase())) {
         if (settings.prefix.endsWith('/') && settings.url.startsWith('/')) {
             settings.url = settings.url.substring(1);
@@ -311,8 +343,8 @@ _service.url = (...params) => {
             settings.url = '/'+ settings.url;
         }
         let prefix = settings.prefix;
-        if (prefix.indexOf('/') == 0) {
-            let frontendServer	= false;
+        if (prefix.indexOf('/') === 0) {
+            let frontendServer = false;
             let hostname = '';
             let port = '';
             if (window && window.location.host.indexOf(':')) {
@@ -323,7 +355,7 @@ _service.url = (...params) => {
                 frontendServer = true;
                 port = '9000';
             }
-            if (port.length > 2 && port.substring(port.length - 2, port.length) == '30') {
+            if (port.length > 2 && port.substring(port.length - 2, port.length) === '30') {
                 frontendServer = true;
                 port = port.substring(0, port.length - 2) + '90';
             }
