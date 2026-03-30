@@ -1,3 +1,7 @@
+# 1.3.0 / 20265-03-30
+
+New events for `start` and `end`, execute callback functions before and after the request is made.
+
 # 1.2.1 / 2025-12-23
 
 New `_service.url('...')` to easily get the full service URL.
