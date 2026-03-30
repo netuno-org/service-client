@@ -201,7 +201,7 @@ To get the full service URL with the prefix:
 const avatarLink = _service.url(`/profile/avatar?uid=${uidAvatar}`)
 ```
 
-### POST JSON with ReactJS and Ant.Design:
+### POST JSON with React and Ant.Design:
 
 Imports:
 
@@ -261,4 +261,75 @@ In the Ant.Design Form component uses the finish callback function:
     <Form onFinish={onFinish}>
         ...
     </Form>
+```
+
+
+### Upload Form with React and Ant.Design
+
+Here a full example of how upload a form using Ant.Design and FormData:
+
+```jsx
+import {useState} from 'react';
+import _service from '@netuno/service-client';
+import {Button, Form, Input, Upload, notification} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+
+function UploadForm() {
+    const [loading, setLoading] = useState(false);
+    const onFinish = (values)=> {
+        const formData = new FormData();
+        formData.append("title", values.title);
+        formData.append("file", values.file.fileList[0].originFileObj);
+        _service({
+            method: "POST",
+            url: "file/save",
+            data: formData,
+            start: () => {
+                setLoading(true);
+            },
+            success: () => {
+                notification.success({
+                    title: 'Form Saved',
+                    description: 'Your form data was successfully saved.'
+                });
+            },
+            fail: (e) => {
+                console.log("Upload Form Error", e);
+                notification.error({
+                    title: 'Form Failed',
+                    description: 'Unable to save your form data.'
+                });
+            },
+            end: () => {
+                setLoading(false);
+            }
+        });
+    };
+    return (
+        <Form onFinish={onFinish} layout="vertical">
+            <Form.Item label="Title" name="title"
+                rules={[{ required: true, message: 'Please input your title.' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item label="File" name="file"
+                rules={[{ required: true, message: 'Please choose your file.' }]}
+            >
+                <Upload listType="text" maxCount={1}>
+                    <button type="button" style={{color: 'inherit', cursor: 'inherit', border: 0, background: 'inherit'}}>
+                        <PlusOutlined />
+                        <div style={{marginTop: 8}}>Upload</div>
+                    </button>
+                </Upload>
+            </Form.Item>
+            <Form.Item label={null}>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                    Submit
+                </Button>
+            </Form.Item>
+        </Form>
+    )
+}
+
+export default UploadForm;
 ```
