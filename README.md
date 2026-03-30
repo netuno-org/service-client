@@ -9,7 +9,7 @@ See more about the [Netuno Platform](https://netuno.org/): open source, low-code
 ## Install
 
 ```shell
-npm i -S @netuno/service-client
+bun add @netuno/service-client
 ```
 
 ## Import
@@ -42,8 +42,10 @@ Default config parameters:
         'Content-Type': 'application/json',
         'Accept':  'application/json'
     },
+    start: () => { },
     success: (data) => { },
-    fail: (data) => {}
+    fail: (data) => {},
+    end: () => { }
 }
 ```
 
@@ -59,6 +61,9 @@ The `data` is automatically converted to the body content.
   _service({
       url: "/services/my-get-service",
       data: { param1: "1", param2: "2" },
+      start: () => {
+          console.log("Service request starting.");
+      },
       success: (response) => {
           if (response.text) {
               console.log("Service Response", response.text);
@@ -67,8 +72,11 @@ The `data` is automatically converted to the body content.
               console.log("Service Response", response.json);
           }
       },
-      fail: (e) => {
-          console.log("Service Error", e);
+      fail: (error) => {
+          console.log("Service Error", error);
+      },
+      end: () => {
+          console.log("Service request ended.");
       }
   });
 ```
@@ -130,58 +138,6 @@ _service({
 });
 ```
 
-### POST JSON with ReactJS and Ant.Design:
-
-Imports:
-
-```javascript
-import { notification } from 'antd';
-import _service from '@netuno/service-client';
-```
-
-Save event will send the values object as JSON:
-
-```javascript
-function handleSave(values) {
-    this.setState({ loading: true });
-    const fail = () => {
-        this.setState({ loading: false });
-        notification["error"]({
-            message: 'Error',
-            description: 'Your data could not be saved.',
-            style: {
-                marginTop: 100
-            }
-        });
-    };
-    _service({
-        url: '/services/my-post-service',
-        method: 'POST',
-        data: values,
-        success: (response) => {
-            if (response.json.result === true) {
-                notification["success"]({
-                    message: 'Success',
-                    description: 'Your data has been saved.',
-                    style: {
-                        marginTop: 100
-                    }
-                });
-                this.setState({
-                    loading: false
-                });
-            } else {
-                fail();
-            }
-        },
-        fail: (e) => {
-            console.log("Service failed.", e);
-            fail();
-        }
-    });
-}
-```
-
 ### BLOB
 
 Download file:
@@ -235,13 +191,74 @@ import download from 'downloadjs';
   });
 
 ...
-
 ```
 
 ### Service URL
 
-To get the full service URL:
+To get the full service URL with the prefix:
 
 ```javascript
 const avatarLink = _service.url(`/profile/avatar?uid=${uidAvatar}`)
+```
+
+### POST JSON with ReactJS and Ant.Design:
+
+Imports:
+
+```javascript
+import React, {useState} from "react";
+import { Form, notification } from 'antd';
+import _service from '@netuno/service-client';
+```
+
+Define the loading state:
+
+```javascript
+const [loading, setLoading] = useState(false);
+```
+
+Save event will send the values object as JSON:
+
+```javascript
+const onFinish = (values) => {
+    const failNotify = () => {
+        notification.error({
+            title: 'Error',
+            description: 'Your data could not be saved.'
+        });
+    };
+    _service({
+        url: '/services/my-post-service',
+        method: 'POST',
+        data: values,
+        start: () => {
+            setLoading(true);
+        },
+        success: ({json}) => {
+            if (json.result === true) {
+                notification.success({
+                    title: 'Success',
+                    description: 'Your data has been saved.'
+                });
+            } else {
+                failNotify();
+            }
+        },
+        fail: (e) => {
+            console.log("Service failed.", e);
+            failNotify();
+        },
+        end: () => {
+            setLoading(false);
+        },
+    });
+};
+```
+
+In the Ant.Design Form component uses the finish callback function:
+
+```jsx
+    <Form onFinish={onFinish}>
+        ...
+    </Form>
 ```
