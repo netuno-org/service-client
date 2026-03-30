@@ -289,15 +289,15 @@ function UploadForm() {
             },
             success: () => {
                 notification.success({
-                    title: 'Form Saved',
-                    description: 'Your form data was successfully saved.'
+                    title: 'Upload Form',
+                    description: 'Your data was successfully saved.'
                 });
             },
             fail: (e) => {
-                console.log("Upload Form Error", e);
+                console.error("Upload Form Failed", e);
                 notification.error({
-                    title: 'Form Failed',
-                    description: 'Unable to save your form data.'
+                    title: 'Upload Form',
+                    description: 'Unable to save your data.'
                 });
             },
             end: () => {
