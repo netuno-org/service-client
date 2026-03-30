@@ -12,6 +12,9 @@ describe("SIMPLE", () => {
         url: "/simple",
         data: { name: "Test Name", test: true },
         timeout: 500,
+        start: () => {
+          console.log(method.toUpperCase() + " start");
+        },
         success: (response) => {
           if (response.text) {
             console.log("Service Response", response.text);
@@ -24,6 +27,9 @@ describe("SIMPLE", () => {
         fail: (e) => {
           console.log("Service Error", e);
           done('Service Error: '+ JSON.stringify(e));
+        },
+        end: () => {
+          console.log(method.toUpperCase() + " end");
         }
       });
     });

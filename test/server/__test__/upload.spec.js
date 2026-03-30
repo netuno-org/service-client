@@ -14,6 +14,9 @@ describe("UPLOAD", () => {
           method,
           url: "/upload",
           data: { name: "Test Name", test: true, "image": file },
+          start: () => {
+            console.log("UPLOAD start");
+          },
           success: (response) => {
             if (response.json) {
               console.log("Service Response", response.json);
@@ -23,6 +26,9 @@ describe("UPLOAD", () => {
           fail: (e) => {
             console.log("Service Error", e);
             done('Service Error: '+ e.error);
+          },
+          end: () => {
+            console.log("UPLOAD end");
           }
         });
       });

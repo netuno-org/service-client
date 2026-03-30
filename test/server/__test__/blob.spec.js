@@ -13,6 +13,9 @@ describe("BLOB", () => {
         data: { name: "Test Name", test: true },
         blob: true,
         timeout: 500,
+        start: () => {
+          console.log("BLOB start");
+        },
         success: (response) => {
           if (response.blob) {
             console.log("Service Response", response.blob);
@@ -22,6 +25,9 @@ describe("BLOB", () => {
         fail: (e) => {
           console.log("Service Error", e);
           done('Service Error: '+ JSON.stringify(e));
+        },
+        end: () => {
+          console.log("BLOB end");
         }
       });
     });
