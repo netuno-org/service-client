@@ -1,7 +1,7 @@
 {
     "name": "@netuno/service-client",
     "version": "1.3.0",
-    "description": "",
+    "description": "REST and HTTP client optimized for Netuno Platform services integrations.",
     "main": "index.cjs",
     "type": "module",
     "exports": {
